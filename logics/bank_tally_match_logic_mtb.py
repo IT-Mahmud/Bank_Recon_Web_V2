@@ -4,9 +4,9 @@ import re
 
 # --- Config for MTB bank extraction ---
 BANK_CONFIG = {
-    "narration_column": "Transaction Detail",
-    "withdrawal_column": "Withdrawal (Dr.)",
-    "deposit_column": "Deposit (Cr.)",
+    "narration_column": "B_Particulars",
+    "withdrawal_column": "B_Withdrawal",
+    "deposit_column": "B_Deposit",
     "prefixes": [
         {"prefix": "LC ISSUE CHARGE :", "min_digits": 5},
         {
@@ -63,9 +63,9 @@ def extract_bank_cheque_ref(text):
 
 # --- Config for Tally extraction ---
 TALLY_CONFIG = {
-    "narration_column": "Particulars",
-    "debit_column": "Debit",
-    "credit_column": "Credit",
+    "narration_column": "T_Particulars",
+    "debit_column": "T_Debit",
+    "credit_column": "T_Credit",
     "prefixes": [
         {"prefix": "$", "min_digits": 5},
         {"prefix": "cq-", "min_digits": 5},
@@ -91,8 +91,10 @@ def match_cheques(bank_df, tally_df, start_id=1):
     Returns bt_matched table as a list of dicts.
     """
     # Filter for unmatched only
-    bank_df = bank_df[bank_df['is_matched'] == 0].copy()
-    tally_df = tally_df[tally_df['is_matched'] == 0].copy()
+    # bank_df = bank_df[bank_df['is_matched'] == 0].copy()
+    # tally_df = tally_df[tally_df['is_matched'] == 0].copy()
+    bank_df = bank_df[bank_df['bf_is_matched'] == 0].copy()
+    tally_df = tally_df[tally_df['bft_is_matched'] == 0].copy()
 
     bank_df['cheque_ref'] = bank_df[BANK_CONFIG['narration_column']].apply(extract_bank_cheque_ref).apply(normalize_ref)
     tally_df['cheque_ref'] = tally_df[TALLY_CONFIG['narration_column']].apply(extract_tally_cheque_ref).apply(normalize_ref)
