@@ -85,7 +85,9 @@ def extract_tally_cheque_ref(text):
 def normalize_ref(ref):
     return ref.lstrip('0') if isinstance(ref, str) else ref
 
-def match_cheques(bank_df, tally_df, start_id=1):
+# def match_cheques(bank_df, tally_df, start_id=1):
+def match_cheques(bank_df, tally_df, start_id=1, run_tag=""):
+
     """
     MTB cheque matching: only unmatched (is_matched == 0) rows.
     Returns bt_matched table as a list of dicts.
@@ -123,7 +125,9 @@ def match_cheques(bank_df, tally_df, start_id=1):
             tally_credit = float(t_row.get(TALLY_CONFIG['credit_column'], 0) or 0)
             tally_debit = float(t_row.get(TALLY_CONFIG['debit_column'], 0) or 0)
             if (withdrawal and withdrawal == tally_credit) or (deposit and deposit == tally_debit):
-                match_id_str = f"BTM_{match_id:04d}"
+                # match_id_str = f"BTM_{match_id:04d}"
+                match_id_str = f"BTM_{run_tag}_{match_id:04d}" if run_tag else f"BTM_{match_id:04d}"
+
                 matched.append({**b_row.to_dict(), 'bt_match_id': match_id_str, 'bt_source': 'Bank'})
                 matched.append({**t_row.to_dict(), 'bt_match_id': match_id_str, 'bt_source': 'Tally'})
                 used_bank.add(i)

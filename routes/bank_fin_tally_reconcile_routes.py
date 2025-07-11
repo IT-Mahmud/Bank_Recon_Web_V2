@@ -76,7 +76,10 @@ def reconcile_bft():
         })
 
     # Matching logic
-    bft_matched_df = bank_fin_tally_match(bf_df, tally_df, bank_code)
+    # bft_matched_df = bank_fin_tally_match(bf_df, tally_df, bank_code)
+    run_tag = f"{bank_code}_{account_number}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    bft_matched_df = bank_fin_tally_match(bf_df, tally_df, bank_code, run_tag=run_tag)
+
 
     ensure_table_exists(engine, 'bft_matched')
     inserted_count = 0

@@ -25,7 +25,8 @@ def _get_bank_amount(bank_row):
         raise ValueError("Missing 'B_Withdrawal' column in bank_row.")
     return float(bank_row['B_Withdrawal'])
 
-def bank_fin_tally_match(bf_df, tally_df, bank_code):
+# def bank_fin_tally_match(bf_df, tally_df, bank_code):
+def bank_fin_tally_match(bf_df, tally_df, bank_code, run_tag=""):
 
     # print("Columns in bf_df before matching:", bf_df.columns.tolist())
 
@@ -80,7 +81,9 @@ def bank_fin_tally_match(bf_df, tally_df, bank_code):
 
         if n_fin == n_tally and abs(group_sum_fin - bank_amount) < 1e-4 and abs(group_sum_tally - bank_amount) < 1e-4:
             used_tally_uids.update(matched_tally_uids)
-            bft_match_id = f'BFTM_{bft_id_counter:04d}'
+            # bft_match_id = f'BFTM_{bft_id_counter:04d}'
+            bft_match_id = f"BFTM_{run_tag}_{bft_id_counter:04d}" if run_tag else f"BFTM_{bft_id_counter:04d}"
+
             bft_match_type = f"1 to {n_fin} to {n_tally}"
 
             bank_out = bank_row.copy()
